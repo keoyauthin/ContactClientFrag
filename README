@@ -1,0 +1,206 @@
+===============================================================================
+1. ContactClientFrag - Overview
+===============================================================================
+ContactClientFrag is a UI enhancement to the ContactClient in RestfulContactApp 
+which is located at https://github.com/ronlemire2/RestfulContactApp.
+
+The main changes are:
+	1) UI has been divided into 7 Fragments that are managed by 2 Activities.
+	2) Menus are replaced by an ActionBar that contains only icons i.e.
+		no tabs or dropdowns.
+		
+ContactClientFrag uses the same Contact Server as in RestfulContactApp which
+has not changed. The Database schema remains the same as does the interface
+of the WCF Rest Web Service.
+		
+===============================================================================
+2. Presentation changes
+===============================================================================
+a) ContactClientFrag is designed to work differently on a Tablet versus on a 
+	Phone since there is more screen width on a Tablet. It uses the Show/Hide 
+	multi-pane layout pattern described at: http://developer.android.com/design/
+	patterns/multi-pane-layouts.html
+	
+	There are 2 modes of Presentation:
+		1) Multi-pane - for Tablet landscape with the Contact List in the left
+			pane and the Contact operations (Add, Update,Delete) done in the
+			right side pane. The operations are presented in an Action Bar at the
+			top of the screen.
+		2) Single-pane - for Tablet portrait, Phone landscape, Phone portrait 
+			with Fragments overlaying each other via a dynamically generated 
+			ContactClientDetailsActivity. Phone landscape is not multi-pane 
+			because it's width is not wide enough to accomodate 2 panes.
+		
+===============================================================================
+3. How to use Presentation Mode 1: Tablet landscape
+===============================================================================
+a) The App starts by forcing user to enter REST URLs into SharedPreferences. 
+	There are 2 URLs to be set. One called MULTIPLE_CONTACT_URL 
+	that is used to get a collection of Contacts. One called SINGLE_CONTACT_URL 
+	that is used to get, add, update, delete a single Contact. 
+b) After setting the URLs, the app will present the ContactList in the left side
+	pane. The ContactList is a TableLayout with each TableRow containing 3 
+	columns: Id, FirstName, LastName. Email is not presented in the ContactList. 
+	The Id column value	is underlined. Click the Id column value to view an 
+	existing Contact in the right-side pane. 
+c) The Action Bar at the top of the screen is composed of 3 sections:
+	1) Logo at the far left. Press the logo to refresh the Contact List in 
+		the left pane and to clear the right-side pane at the same time.
+	2) App Title to the right of the logo is the App's Title. Clicking the 
+		Title doesn't make anything happen.
+	3) Four action icons to the right of the App Title:
+		a) (+) to add a new contact
+		b) (pencil) to update an existing contact
+		c) (X) to delete and existing contact
+		d) (wrench) to  update URLs
+d) The Action Icons are active all the time and will present warning messages
+	if used inappropriately e.g. if Update is pressed before a Contact is 
+	in View.	
+e) To Add a new Contact:
+	1) Press the Add icon (+) in the Action Bar.
+	2) A blank form will be presented in the right-side pane.
+	3) App automatically enters zero(0) for Id. 
+	4) Enter 2 required fields (FirstName, LastName) and optional Email field.
+	5) Press 'Add Contact' button.
+	6) App will confirm with 'Contact Added' toast.
+	7) Warning message will be presented if either First or Last name is not
+		entered.
+	8) To cancel the Add operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+d) To Update an existing Contact:
+	1) From the ContactList click on an underlined Id column.
+	2) An existing Contact will be presented in the right-side pane. The Contact
+		is read-only at this point.
+	3) Press the Pencil icon in the Action Bar. This enables the FirstName, 
+		LastName and Email fields. Id is still readonly.
+	4) Change any of the enabled fields.
+	5) Press the 'Update Contact' button
+	6) App will confirm with 'Contact Updated' toast.
+	7) Warning message will be presented if an existing Contact has not been
+		chosen before the Pencil icon is pressed.
+	8) To cancel the Update operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+e) To Delete an existing Contact:
+	1) From the ContactList click on an underlined Id column.
+	2) An existing Contact will be presented in the right-side pane. 
+	3) Press the (X) icon in the Action Bar.
+	4) Form not contains a 'Delete Contact' button. All fields are still
+		readonly.
+	4) Press the 'Delete Contact' button.
+	5) An AlertDialog will be presented with 'Are you sure?'
+	6) Press 'Yes' button.
+	7) App will confirm with 'Contact Deleted' toast.
+	8) Warning message will be presented if an existing Contact has not been
+		chosen before the (X) action bar icon is pressed.
+	9) To cancel the Delete operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+f) To set REST URLs:
+	1) Press the (wrench) icon in the Action Bar.
+	2) Prefences Dialog will be presented.
+	3) Set MULTIPLE_CONTACT_URL for getting all contacts.
+	4) Set SINGLE_CONTACT_URL for getting, adding, updating, deleting a single
+		contact.
+	5) Press 'Save Prefs' button.
+		
+===============================================================================
+3. How to use Presentation Mode 2: Tablet portrait, Phone landscape and portrait
+===============================================================================
+a) Mode 2 is single-pane. There is no left-side and right-side. There is only 
+	one screen. Each user interaction will create a new Fragment which will 
+	overlay the current Fragment. The user can back track by pressing the back 
+	button but the app will in a number of cases automatically back track to the 
+	Contact List.
+b) The App starts by forcing user to enter REST URLs into SharedPreferences. 
+	There are 2 URLs to be set. One called MULTIPLE_CONTACT_URL 
+	that is used to get a collection of Contacts. One called SINGLE_CONTACT_URL 
+	that is used to get, add, update, delete a single Contact. 
+c) After setting the URLs, the app will present the ContactList. The ContactList 
+	is a TableLayout with each TableRow containing 3 columns: Id, FirstName, 
+	LastName. Email is not presented in the ContactList. The Id column value 
+	is underlined. Click the Id column value to view an existing Contact in a 
+	new fragment. 
+d) The Action Bar at the top of the screen is composed of 3 sections:
+	1) Logo at the far left. Press the logo to refresh the Contact List in 
+		the left pane and to clear the right-side pane at the same time.
+	2) App Title to the right of the logo is the App's Title. Clicking the Title 
+		doesn't	make anything happen.
+	3) Four action icons to the right of the App Title:
+		a) (+) to add a new contact
+		b) (pencil) to update an existing contact
+		c) (X) to delete and existing contact
+		d) (wrench) to  update URLs
+e) Note that if the screen is not wide enough to present the 4 action icons, 
+	there will be an icon at the far right. Press it to dropdown the other
+	actions.
+f) The Action Icons are active all the time and will present warning messages
+	if used inappropriately e.g. if Update is pressed before a Contact is 
+	in View.	
+g) To Add a new Contact:
+	1) Press the Add icon (+) in the Action Bar.
+	2) A blank form will be presented.
+	3) App automatically enters zero(0) for Id. 
+	4) Enter 2 required fields (FirstName, LastName) and optional Email field.
+	5) Press 'Add Contact' button.
+	6) App will confirm with 'Contact Added' toast.
+	7) App will automatically return to the Contact List with the new 
+		Contact in the List.
+	8) Warning message will be presented if either First or Last name is not
+		entered.
+	9) To cancel the Add operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+h) To Update an existing Contact:
+	1) From the ContactList click on an underlined Id column.
+	2) An existing Contact will be presented. The Contact is read-only at 
+		this point.
+	3) Press the Pencil icon in the Action Bar. This enables the FirstName, 
+		LastName and Email fields. Id is still readonly.
+	4) Change any of the enabled fields.
+	5) Press the 'Update Contact' button
+	6) App will confirm with 'Contact Updated' toast.
+	7) App will automatically return to the Contact List with updates to 
+		FirstName or LastName in the List.
+	8) Warning message will be presented if an existing Contact has not been
+		chosen before the Pencil icon is pressed.
+	9) To cancel the Update operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+i) To Delete an existing Contact:
+	1) From the ContactList click on an underlined Id column.
+	2) An existing Contact will be presented in the right-side pane. 
+	3) Press the (X) icon in the Action Bar.
+	4) Form not contains a 'Delete Contact' button. All fields are still
+		readonly.
+	4) Press the 'Delete Contact' button.
+	5) An AlertDialog will be presented with 'Are you sure?'
+	6) Press 'Yes' button.
+	7) App will confirm with 'Contact Deleted' toast.
+	8) App will automatically return to the Contact List with the deleted
+		Contact removed from the List.
+	9) Warning message will be presented if an existing Contact has not been
+		chosen before the (X) action bar icon is pressed.
+	10) To cancel the Delete operation, choose another Action Icon from the 
+		Action Bar or press the App Icon in the top left corner of the screen.
+j) To set REST URLs:
+	1) Press the (wrench) icon in the Action Bar.
+	2) Prefences Dialog will be presented.
+	3) Set MULTIPLE_CONTACT_URL for getting all contacts.
+	4) Set SINGLE_CONTACT_URL for getting, adding, updating, deleting a single
+		contact.
+	5) Press 'Save Prefs' button.
+
+===============================================================================
+4. ContactClientFrag Screenshots
+===============================================================================
+Located in Docs/Screenshots will step through the basic uses cases. The .png
+file names go in sequential order:
+	1) Set Preferences (note that app requires URLs to be entered before 
+		presenting any activities).
+	2) ContactList
+	3) Add Contact
+	4) Update Contact
+	5) Delete Contact
+	
+===============================================================================
+5. Android Client Testing
+===============================================================================
+a) Galaxy Tab 10.1 		(Android Version 3.2 	- API 13 	- HoneyComb)
+b) Galaxy Nexus device	(Android Version 4.0	- API 14	- Ice Cream Sandwich)
